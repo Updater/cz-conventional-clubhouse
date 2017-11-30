@@ -1,0 +1,23 @@
+{
+  "name": "cz-conventional-clubhouse",
+  "version": "0.0.0",
+  "description": "A commitizen + conventional changelog adapter with clubhouse friendly tips",
+  "main": "index.js",
+  "author": "Thomas Crescenzi",
+  "license": "MIT",
+  "devDependencies": {
+    "commitizen": "^2.9.6"
+  },
+  "dependencies": {
+    "conventional-commit-types": "^2.2.0",
+    "lodash.map": "^4.6.0",
+    "longest": "^2.0.1",
+    "right-pad": "^1.0.1",
+    "word-wrap": "^1.2.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./index.js"
+    }
+  }
+}
