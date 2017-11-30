@@ -102,11 +102,14 @@ module.exports = {
       let scope = answers.scope.trim();
       scope = scope ? '(' + answers.scope.trim() + ')' : '';
 
-      // Hard limit this line
-      const head = (answers.type + scope + ': ' + answers.subject.trim()).slice(0, maxLineWidth);
 
-      // Wrap these lines at 100 characters
-      const body = wrap(answers.body, wrapOptions);
+      const headline = (answers.type + scope + ': ' + answers.subject.trim());
+
+      const head = headline.slice(0, maxLineWidth);
+
+      const remainingHeadline = headline.slice(maxLineWidth, -1);
+
+      const body = wrap(remainingHeadline.length > 0 ? `...${remainingHeadline}\n${answers.body}` : answers.body, wrapOptions);
 
       // Apply breaking change prefix, removing it if already present
       let breaking = answers.breaking ? answers.breaking.trim() : '';
