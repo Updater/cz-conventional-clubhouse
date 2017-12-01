@@ -1,9 +1,13 @@
 {
   "name": "cz-conventional-clubhouse",
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "description": "A commitizen + conventional changelog adapter with clubhouse friendly tips",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Updater/cz-conventional-clubhouse.git"
+  },
   "scripts": {
     "format": "prettier --write --single-quote --trailing-comma es5",
     "format:all": "yarn format index.js README.md src/*.js",
@@ -15,11 +19,13 @@
     "node": ">6.0.0"
   },
   "devDependencies": {
+    "condition-circle": "^1.5.0",
     "@commitlint/config-conventional": "^5.1.3",
     "commitizen": "^2.9.6",
     "commitlint": "^5.2.0",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
+    "semantic-release": "^11.0.1",
     "prettier": "^1.8.2"
   },
   "dependencies": {
@@ -41,5 +47,8 @@
       "yarn format",
       "git add"
     ]
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }
