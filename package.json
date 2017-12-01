@@ -6,9 +6,13 @@
   "license": "MIT",
   "scripts": {
     "format": "prettier --write --single-quote --trailing-comma es5",
-    "format:all": "yarn format index.js README.md",
+    "format:all": "yarn format index.js README.md src/*.js",
     "precommit": "lint-staged",
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "test": "jest"
+  },
+  "engines": {
+    "node": ">6.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^5.1.3",
