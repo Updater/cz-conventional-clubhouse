@@ -4,7 +4,7 @@ const longest = require('longest');
 const rightPad = require('right-pad');
 const types = require('conventional-commit-types').types;
 
-const STORY_REGEX = /[\s,.;]/;
+const STORY_REGEX = /[,]/;
 
 function filter(array) {
   return array.filter(function(x) {
@@ -84,7 +84,7 @@ module.exports = {
       }, {
         type: 'input',
         name: 'stories',
-        message: `What stories?`,
+        message: `What stories?(comma seperated)`,
         when: (answers) => answers.isClubhouseStory,
       }
     ]).then(function(answers) {
