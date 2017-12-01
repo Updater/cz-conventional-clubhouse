@@ -1,5 +1,6 @@
 const formatAnswers = require('./format-answers');
 const shortid = require('shortid');
+const wrap = require('word-wrap');
 
 const BRANCH_REGEX = /\[branch ch(.*)\]/;
 const STORY_REGEX = /\[ch(.*)\]/;
@@ -64,6 +65,10 @@ describe('formatAnswers', () => {
     it('places the body after a newline', () => {
       expect(commitmsgPieces[1]).toBe('');
     });
+
+    it(`correctly wraps every line at 100 characters`, () => {
+      commitmsgPieces.forEach(line => expect(line.length).toBeLessThan(101));
+    });
   });
 
   describe('clubhouse', () => {
@@ -84,11 +89,5 @@ describe('formatAnswers', () => {
         expect(msg.match(STORY_REGEX)[1]).toBe(stories[i])
       );
     });
-  });
-
-  describe('wrapping', () => {
-    beforeEach(() => buildMsg());
-
-    it('correctly wraps the body at 100 characters max splitting at word boundries', () => {});
   });
 });
