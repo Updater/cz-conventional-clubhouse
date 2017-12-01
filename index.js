@@ -26,6 +26,10 @@ function formatStory(story) {
   return `[ch${story}]`;
 }
 
+function formatBranchStory(story) {
+  return `[branch ch${story}]`;
+}
+
 module.exports = {
   // When a user runs `git cz`, prompter will
   // be executed. We pass you cz, which currently
@@ -78,6 +82,16 @@ module.exports = {
         when: (answers) => answers.isIssueAffected,
       }, {
         type: 'confirm',
+        name: 'isClubhouseBranch',
+        message: `Would you like to link this branch to any Clubhouse.io stories not already linked?`,
+        default: false,
+      }, {
+        type: 'input',
+        name: 'branchStories',
+        message: `What stories?(comma seperated)`,
+        when: (answers) => answers.isClubhouseBranch,
+      }, {
+        type: 'confirm',
         name: 'isClubhouseStory',
         message: `Would you like to directly reference any Clubhouse.io stories that aren't already linked via the branch?`,
         default: false,
@@ -119,8 +133,9 @@ module.exports = {
       const issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
 
       const stories = answers.stories ? answers.stories.split(STORY_REGEX).map(formatStory).join('\n') : '';
+      const branchStories = answers.branchStories ? answers.branchStories.split(STORY_REGEX).map(formatBranchStory).join('\n') : '';
 
-      const footer = filter([ stories, breaking, issues ]).join('\n\n');
+      const footer = filter([ branchStories, stories, breaking, issues ]).join('\n\n');
 
       commit(head + '\n\n' + body + '\n\n' + footer);
     });
