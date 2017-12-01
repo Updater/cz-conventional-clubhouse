@@ -118,7 +118,6 @@ module.exports = {
 
       const issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
 
-      console.log(answers.stories);
       const stories = answers.stories ? answers.stories.split(STORY_REGEX).map(formatStory).join('\n') : '';
 
       const footer = filter([ stories, breaking, issues ]).join('\n\n');
