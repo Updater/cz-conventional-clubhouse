@@ -2,7 +2,7 @@
 
 An adapter for commitizen that follows the
 [angular commit standard](https://github.com/conventional-changelog/conventional-changelog/blob/master/packages/conventional-changelog-angular/convention.md).
-Initially forked from commitizen/cz-conventional-changelog this version provides
+Initially forked from [commitizen/cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) this version provides
 additional questions intended to help aid users of clubhouse.io.
 
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
