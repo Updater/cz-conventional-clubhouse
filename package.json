@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "A commitizen + conventional changelog adapter with clubhouse friendly tips",
   "main": "index.js",
-  "author": "Thomas Crescenzi",
   "license": "MIT",
   "devDependencies": {
     "commitizen": "^2.9.6"
