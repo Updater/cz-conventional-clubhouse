@@ -4,8 +4,13 @@
   "description": "A commitizen + conventional changelog adapter with clubhouse friendly tips",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "format": "prettier --write --single-quote --trailing-comma es5",
+    "format:all": "yarn format index.js README.md"
+  },
   "devDependencies": {
-    "commitizen": "^2.9.6"
+    "commitizen": "^2.9.6",
+    "prettier": "^1.8.2"
   },
   "dependencies": {
     "conventional-commit-types": "^2.2.0",

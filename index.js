@@ -10,16 +10,16 @@ function filter(array) {
   return array.filter(function(x) {
     return x;
   });
-};
+}
 
 function formatTypes(types) {
   const length = longest(Object.keys(types)).length + 1;
-  return choices = map(types, function (type, key) {
+  return (choices = map(types, function(type, key) {
     return {
       name: rightPad(key + ':', length) + ' ' + type.description,
-      value: key
+      value: key,
     };
-  });
+  }));
 }
 
 function formatStory(story) {
@@ -40,104 +40,137 @@ module.exports = {
   // you're ready to send back a commit template
   // to git.
   prompter: function(cz, commit) {
-    console.log('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
+    console.log(
+      '\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n'
+    );
 
-    cz.prompt([
-      {
-        type: 'list',
-        name: 'type',
-        message: 'Select the type of change that you\'re committing:',
-        choices: formatTypes(types),
-      }, {
-        type: 'input',
-        name: 'scope',
-        message: 'What is the scope of this change? (press enter to skip)'
-      }, {
-        type: 'input',
-        name: 'subject',
-        message: 'Write a short, imperative tense description of the change:'
-      }, {
-        type: 'input',
-        name: 'body',
-        message: 'Provide a longer description of the change: (press enter to skip)\n'
-      }, {
-        type: 'confirm',
-        name: 'isBreaking',
-        message: 'Are there any breaking changes?',
-        default: false
-      }, {
-        type: 'input',
-        name: 'breaking',
-        message: 'Describe the breaking changes:\n',
-        when: (answers) => answers.isBreaking,
-      }, {
-        type: 'confirm',
-        name: 'isIssueAffected',
-        message: 'Does this change affect any open Github issues?',
-        default: false
-      }, {
-        type: 'input',
-        name: 'issues',
-        message: 'Add issue references (e.g. "fix #123", "re #123".):',
-        when: (answers) => answers.isIssueAffected,
-      }, {
-        type: 'confirm',
-        name: 'isClubhouseBranch',
-        message: `Would you like to link this branch to any Clubhouse.io stories not already linked?`,
-        default: false,
-      }, {
-        type: 'input',
-        name: 'branchStories',
-        message: `What stories?(comma seperated)`,
-        when: (answers) => answers.isClubhouseBranch,
-      }, {
-        type: 'confirm',
-        name: 'isClubhouseStory',
-        message: `Would you like to directly reference any Clubhouse.io stories that aren't already linked via the branch?`,
-        default: false,
-      }, {
-        type: 'input',
-        name: 'stories',
-        message: `What stories?(comma seperated)`,
-        when: (answers) => answers.isClubhouseStory,
-      }
-    ]).then(function(answers) {
+    cz
+      .prompt([
+        {
+          type: 'list',
+          name: 'type',
+          message: "Select the type of change that you're committing:",
+          choices: formatTypes(types),
+        },
+        {
+          type: 'input',
+          name: 'scope',
+          message: 'What is the scope of this change? (press enter to skip)',
+        },
+        {
+          type: 'input',
+          name: 'subject',
+          message: 'Write a short, imperative tense description of the change:',
+        },
+        {
+          type: 'input',
+          name: 'body',
+          message:
+            'Provide a longer description of the change: (press enter to skip)\n',
+        },
+        {
+          type: 'confirm',
+          name: 'isBreaking',
+          message: 'Are there any breaking changes?',
+          default: false,
+        },
+        {
+          type: 'input',
+          name: 'breaking',
+          message: 'Describe the breaking changes:\n',
+          when: answers => answers.isBreaking,
+        },
+        {
+          type: 'confirm',
+          name: 'isIssueAffected',
+          message: 'Does this change affect any open Github issues?',
+          default: false,
+        },
+        {
+          type: 'input',
+          name: 'issues',
+          message: 'Add issue references (e.g. "fix #123", "re #123".):',
+          when: answers => answers.isIssueAffected,
+        },
+        {
+          type: 'confirm',
+          name: 'isClubhouseBranch',
+          message: `Would you like to link this branch to any Clubhouse.io stories not already linked?`,
+          default: false,
+        },
+        {
+          type: 'input',
+          name: 'branchStories',
+          message: `What stories?(comma seperated)`,
+          when: answers => answers.isClubhouseBranch,
+        },
+        {
+          type: 'confirm',
+          name: 'isClubhouseStory',
+          message: `Would you like to directly reference any Clubhouse.io stories that aren't already linked via the branch?`,
+          default: false,
+        },
+        {
+          type: 'input',
+          name: 'stories',
+          message: `What stories?(comma seperated)`,
+          when: answers => answers.isClubhouseStory,
+        },
+      ])
+      .then(function(answers) {
+        var maxLineWidth = 100;
 
-      var maxLineWidth = 100;
+        var wrapOptions = {
+          trim: true,
+          newline: '\n',
+          indent: '',
+          width: maxLineWidth,
+        };
 
-      var wrapOptions = {
-        trim: true,
-        newline: '\n',
-        indent:'',
-        width: maxLineWidth
-      };
+        // parentheses are only needed when a scope is present
+        let scope = answers.scope.trim();
+        scope = scope ? '(' + answers.scope.trim() + ')' : '';
 
-      // parentheses are only needed when a scope is present
-      let scope = answers.scope.trim();
-      scope = scope ? '(' + answers.scope.trim() + ')' : '';
+        const headline = answers.type + scope + ': ' + answers.subject.trim();
 
+        const head = headline.slice(0, maxLineWidth);
 
-      const headline = (answers.type + scope + ': ' + answers.subject.trim());
+        const remainingHeadline = headline.slice(maxLineWidth, -1);
 
-      const head = headline.slice(0, maxLineWidth);
+        const body = wrap(
+          remainingHeadline.length > 0
+            ? `...${remainingHeadline}\n${answers.body}`
+            : answers.body,
+          wrapOptions
+        );
 
-      const remainingHeadline = headline.slice(maxLineWidth, -1);
+        // Apply breaking change prefix, removing it if already present
+        let breaking = answers.breaking ? answers.breaking.trim() : '';
+        breaking = breaking
+          ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '')
+          : '';
+        breaking = wrap(breaking, wrapOptions);
 
-      const body = wrap(remainingHeadline.length > 0 ? `...${remainingHeadline}\n${answers.body}` : answers.body, wrapOptions);
+        const issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
 
-      // Apply breaking change prefix, removing it if already present
-      let breaking = answers.breaking ? answers.breaking.trim() : '';
-      breaking = breaking ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '') : '';
-      breaking = wrap(breaking, wrapOptions);
+        const stories = answers.stories
+          ? answers.stories
+              .split(STORY_REGEX)
+              .map(formatStory)
+              .join('\n')
+          : '';
+        const branchStories = answers.branchStories
+          ? answers.branchStories
+              .split(STORY_REGEX)
+              .map(formatBranchStory)
+              .join('\n')
+          : '';
 
-      const issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
+        const footer = filter([branchStories, stories, breaking, issues]).join(
+          '\n\n'
+        );
 
-      const stories = answers.stories ? answers.stories.split(STORY_REGEX).map(formatStory).join('\n') : '';
-      const branchStories = answers.branchStories ? answers.branchStories.split(STORY_REGEX).map(formatBranchStory).join('\n') : '';
-
-      const footer = filter([ branchStories, stories, breaking, issues ]).join('\n\n');
-
-      commit(head + '\n\n' + body + '\n\n' + footer);
-    });
-  }
+        commit(head + '\n\n' + body + '\n\n' + footer);
+      });
+  },
 };
