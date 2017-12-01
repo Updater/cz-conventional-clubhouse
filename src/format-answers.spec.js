@@ -14,26 +14,32 @@ describe('formatAnswers', () => {
   let stories = new Array(Math.floor(Math.random() * 6) + 1).fill(0);
   let mockAnswers;
   let commitmsg;
+  let buildMsg;
 
   beforeEach(() => {
     branches = branches.map(shortid.generate);
     stories = stories.map(shortid.generate);
 
-    mockAnswers = {
-      stories: stories.join(','),
-      branchStories: branches.join(','),
-      scope,
-      subject,
-      issues: '',
-      type,
-      body,
-      breaking: '',
-    };
+    buildMsg = options => {
+      mockAnswers = {
+        stories: stories.join(','),
+        branchStories: branches.join(','),
+        scope,
+        subject,
+        issues: '',
+        type,
+        body,
+        breaking: '',
+      };
 
-    commitmsg = formatAnswers(mockAnswers);
+      commitmsg = formatAnswers(mockAnswers);
+      commitmsgPieces = commitmsg.split('\n');
+    };
   });
 
-  describe('convention', () => {
+  describe('simple message', () => {
+    beforeEach(() => buildMsg());
+
     it('places the type at the start of the first line', () => {
       expect(commitmsg.slice(0, type.length)).toBe(type);
     });
@@ -56,16 +62,15 @@ describe('formatAnswers', () => {
     });
 
     it('places the body after a newline', () => {
-      const pieces = commitmsg.split('\n');
-      expect(pieces[1]).toBe('');
+      expect(commitmsgPieces[1]).toBe('');
     });
   });
 
   describe('clubhouse', () => {
+    beforeEach(() => buildMsg());
+
     it('correctly parses and appends the stories to link to the branch', () => {
-      const branchmsgs = commitmsg
-        .split('\n')
-        .filter(s => s.match(BRANCH_REGEX));
+      const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
       expect(branchmsgs.length).toBe(branches.length);
       branchmsgs.forEach((msg, i) =>
         expect(msg.match(BRANCH_REGEX)[1]).toBe(branches[i])
@@ -73,11 +78,17 @@ describe('formatAnswers', () => {
     });
 
     it('correctly parses and appends the stories to link to the commit', () => {
-      const storymsgs = commitmsg.split('\n').filter(s => s.match(STORY_REGEX));
+      const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
       expect(storymsgs.length).toBe(stories.length);
       storymsgs.forEach((msg, i) =>
         expect(msg.match(STORY_REGEX)[1]).toBe(stories[i])
       );
     });
+  });
+
+  describe('wrapping', () => {
+    beforeEach(() => buildMsg());
+
+    it('correctly wraps the body at 100 characters max splitting at word boundries', () => {});
   });
 });
