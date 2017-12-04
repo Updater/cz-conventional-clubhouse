@@ -21,15 +21,16 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^5.1.3",
     "commitizen": "^2.9.6",
+    "condition-circle": "^1.5.0",
     "commitlint": "^5.2.0",
     "husky": "^0.14.3",
+    "jest": "^21.2.1",
     "lint-staged": "^6.0.0",
     "prettier": "^1.8.2",
     "semantic-release": "^11.0.1"
   },
   "dependencies": {
     "conventional-commit-types": "^2.2.0",
-    "jest": "^21.2.1",
     "lodash.map": "^4.6.0",
     "longest": "^2.0.1",
     "right-pad": "^1.0.1",
@@ -46,5 +47,8 @@
       "yarn format",
       "git add"
     ]
+  },
+  "release": {
+    "verifyConditions": "condition-circle"
   }
 }
