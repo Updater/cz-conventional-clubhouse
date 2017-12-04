@@ -21,8 +21,8 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^5.1.3",
     "commitizen": "^2.9.6",
-    "condition-circle": "^1.5.0",
     "commitlint": "^5.2.0",
+    "condition-circle": "git+https://github.com/bahmutov/condition-circle.git#master",
     "husky": "^0.14.3",
     "jest": "^21.2.1",
     "lint-staged": "^6.0.0",
