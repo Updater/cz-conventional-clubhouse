@@ -101,6 +101,6 @@ module.exports = {
           when: answers => answers.isClubhouseStory,
         },
       ])
-      .then(() => commit(formatAnswers));
+      .then((answers) => commit(formatAnswers(answers)));
   },
 };
