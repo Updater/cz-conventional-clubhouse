@@ -13,6 +13,7 @@ const body =
 describe('formatAnswers', () => {
   let branches = new Array(Math.floor(Math.random() * 6) + 1).fill(0);
   let stories = new Array(Math.floor(Math.random() * 6) + 1).fill(0);
+  let arbitrarySpacesJoin = `,${' '.repeat(Math.floor(Math.random() * 3))}`;
   let mockAnswers;
   let commitmsg;
   let buildMsg;
@@ -23,8 +24,8 @@ describe('formatAnswers', () => {
 
     buildMsg = options => {
       mockAnswers = {
-        stories: stories.join(','),
-        branchStories: branches.join(','),
+        stories: stories.join(arbitrarySpacesJoin),
+        branchStories: branches.join(arbitrarySpacesJoin),
         scope,
         subject,
         issues: '',

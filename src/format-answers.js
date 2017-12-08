@@ -1,5 +1,5 @@
 const wrap = require('word-wrap');
-const STORY_REGEX = /[,]/;
+const STORY_REGEX = /[,]\s*/;
 
 function filter(array) {
   return array.filter(function(x) {
