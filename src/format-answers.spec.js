@@ -13,6 +13,7 @@ const body =
 describe('formatAnswers', () => {
   let branches = new Array(Math.floor(Math.random() * 6) + 1).fill(0);
   let stories = new Array(Math.floor(Math.random() * 6) + 1).fill(0);
+  let arbitrarySpacesJoin = `,${' '.repeat(Math.floor(Math.random() * 3))}`;
   let mockAnswers;
   let commitmsg;
   let buildMsg;
@@ -23,8 +24,8 @@ describe('formatAnswers', () => {
 
     buildMsg = options => {
       mockAnswers = {
-        stories: stories.join(','),
-        branchStories: branches.join(','),
+        stories: stories.join(arbitrarySpacesJoin),
+        branchStories: branches.join(arbitrarySpacesJoin),
         scope,
         subject,
         issues: '',
@@ -32,6 +33,8 @@ describe('formatAnswers', () => {
         body,
         breaking: '',
       };
+
+      Object.assign(mockAnswers, options);
 
       commitmsg = formatAnswers(mockAnswers);
       commitmsgPieces = commitmsg.split('\n');
@@ -72,22 +75,92 @@ describe('formatAnswers', () => {
   });
 
   describe('clubhouse', () => {
-    beforeEach(() => buildMsg());
+    describe('stories', () => {
+      it('correctly parses and appends singular stories', () => {
+        buildMsg({
+          stories: '1234',
+        });
 
-    it('correctly parses and appends the stories to link to the branch', () => {
-      const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
-      expect(branchmsgs.length).toBe(branches.length);
-      branchmsgs.forEach((msg, i) =>
-        expect(msg.match(BRANCH_REGEX)[1]).toBe(branches[i])
-      );
+        const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
+        expect(storymsgs.length).toBe(1);
+        expect(storymsgs[0].match(STORY_REGEX)[1]).toBe('1234');
+      });
+
+      it('correctly parses and appends comma seperated stories', () => {
+        buildMsg({
+          stories: '1234,5678',
+        });
+
+        const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
+        expect(storymsgs.length).toBe(2);
+        expect(storymsgs[0].match(STORY_REGEX)[1]).toBe('1234');
+        expect(storymsgs[1].match(STORY_REGEX)[1]).toBe('5678');
+      });
+
+      it('correctly parses and appends comma and space seperated stories', () => {
+        buildMsg({
+          stories: '1234, 5678',
+        });
+
+        const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
+        expect(storymsgs.length).toBe(2);
+        expect(storymsgs[0].match(STORY_REGEX)[1]).toBe('1234');
+        expect(storymsgs[1].match(STORY_REGEX)[1]).toBe('5678');
+      });
+
+      it('handles an arbitrary number of spaces and stories', () => {
+        buildMsg();
+
+        const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
+        expect(storymsgs.length).toBe(stories.length);
+        storymsgs.forEach((msg, i) =>
+          expect(msg.match(STORY_REGEX)[1]).toBe(stories[i])
+        );
+      });
     });
 
-    it('correctly parses and appends the stories to link to the commit', () => {
-      const storymsgs = commitmsgPieces.filter(s => s.match(STORY_REGEX));
-      expect(storymsgs.length).toBe(stories.length);
-      storymsgs.forEach((msg, i) =>
-        expect(msg.match(STORY_REGEX)[1]).toBe(stories[i])
-      );
+    describe('branches', () => {
+      it('correctly parses and appends singular branches', () => {
+        buildMsg({
+          branchStories: '1234',
+        });
+
+        const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
+        expect(branchmsgs.length).toBe(1);
+        expect(branchmsgs[0].match(BRANCH_REGEX)[1]).toBe('1234');
+      });
+
+      it('correctly parses and appends comma seperated branches', () => {
+        buildMsg({
+          branchStories: '1234,5678',
+        });
+
+        const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
+        expect(branchmsgs.length).toBe(2);
+        expect(branchmsgs[0].match(BRANCH_REGEX)[1]).toBe('1234');
+        expect(branchmsgs[1].match(BRANCH_REGEX)[1]).toBe('5678');
+      });
+
+      it('correctly parses and appends comma and space seperated branches', () => {
+        buildMsg({
+          branchStories: '1234, 5678',
+        });
+
+        const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
+        expect(branchmsgs.length).toBe(2);
+        expect(branchmsgs[0].match(BRANCH_REGEX)[1]).toBe('1234');
+        expect(branchmsgs[1].match(BRANCH_REGEX)[1]).toBe('5678');
+      });
+
+      it('handles an arbitrary number of spaces and branches', () => {
+        buildMsg();
+
+        const branchmsgs = commitmsgPieces.filter(s => s.match(BRANCH_REGEX));
+        expect(branchmsgs.length).toBe(branches.length);
+        branchmsgs.forEach((msg, i) =>
+          expect(msg.match(BRANCH_REGEX)[1]).toBe(branches[i])
+        );
+      });
     });
   });
 });
