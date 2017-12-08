@@ -79,7 +79,7 @@ module.exports = {
         {
           type: 'confirm',
           name: 'isClubhouseBranch',
-          message: `Would you like to link this branch to any Clubhouse.io stories not already linked?`,
+          message: `Would you like to link this branch to any Clubhouse.io stories?`,
           default: false,
         },
         {
@@ -91,7 +91,7 @@ module.exports = {
         {
           type: 'confirm',
           name: 'isClubhouseStory',
-          message: `Would you like to directly reference any Clubhouse.io stories that aren't already linked via the branch?`,
+          message: `Would you like to directly reference any Clubhouse.io stories?`,
           default: false,
         },
         {
@@ -101,6 +101,6 @@ module.exports = {
           when: answers => answers.isClubhouseStory,
         },
       ])
-      .then((answers) => commit(formatAnswers(answers)));
+      .then(answers => commit(formatAnswers(answers)));
   },
 };
